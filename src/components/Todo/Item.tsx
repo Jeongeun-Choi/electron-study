@@ -1,5 +1,5 @@
 import { MouseEvent, useCallback } from "react";
-import { ItemContainer } from "./style";
+import { ItemButton, ItemContainer, ItemTitle } from "./style";
 
 type TodoList = {
   id: number;
@@ -27,12 +27,17 @@ const Item: React.FC<ItemProps> = ({ item, checked, onChangeChecked }) => {
     [onChangeChecked, item.id]
   );
 
+  // const handleClickTrash = useCallback(() => {
+
+  // }, []);
+
   return (
     <ItemContainer>
-      <div>{item.title}</div>
-      <button onClick={handleClickCheckbox}>
-        {checked ? "체크표시" : "빈칸"}
-      </button>
+      <ItemTitle isCheck={checked}>{item.title}</ItemTitle>
+      <ItemButton onClick={handleClickCheckbox}>
+        {checked ? "✅" : "🟩"}
+      </ItemButton>
+      {/* <ItemButton>🗑</ItemButton> */}
     </ItemContainer>
   );
 };
