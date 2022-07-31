@@ -12,9 +12,13 @@ type CheckListType = {
   [key: number]: boolean;
 };
 
+type TodoListType = {
+  id: number;
+  title: string;
+};
 const TodoList = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [todoList, setTodoList] = useState([{ id: 1, title: "대충" }]);
+  const [todoList, setTodoList] = useState<TodoListType[]>([]);
   const [checkList, setCheckList] = useState<CheckListType>({ 1: false });
   const [totalId, setTotalId] = useState<number>(1);
 
@@ -43,7 +47,18 @@ const TodoList = () => {
 
   const handleDeleteItem = useCallback(
     (itemNo: number) => {
+      const localTodoList = localStorage.getItem("todo");
+
+      if (!localTodoList) {
+        return;
+      }
+      const parseLocalStorage = JSON.parse(localTodoList);
+
       const newTodoList = todoList.filter((item) => item.id !== itemNo);
+      const newLocalStorage = parseLocalStorage.filter(
+        (item: TodoListType) => item.id !== itemNo
+      );
+
       const newCheckList = Object.keys(checkList).reduce(
         (acc: CheckListType, cur: string) => {
           const id = parseInt(cur, 10);
@@ -59,9 +74,19 @@ const TodoList = () => {
 
       setTodoList(newTodoList);
       setCheckList(newCheckList);
+      localStorage.setItem(`todo`, JSON.stringify(newLocalStorage));
     },
     [checkList, todoList]
   );
+
+  const handleDeleteAll = useCallback((e: MouseEvent) => {
+    e.preventDefault();
+    if (window.confirm("정말 전체 할 일을 다 삭제하시겠습니까?")) {
+      setTodoList([]);
+      setCheckList({});
+      localStorage.setItem("todo", "");
+    }
+  }, []);
 
   const handleSubmit = useCallback(
     (e: FormEvent) => {
@@ -107,6 +132,7 @@ const TodoList = () => {
         <input ref={inputRef} placeholder="할 일 적으세여" />
         <button>얍</button>
       </form>
+      <button onClick={handleDeleteAll}>전체 삭제!</button>
       <List
         todoList={todoList}
         checkList={checkList}
