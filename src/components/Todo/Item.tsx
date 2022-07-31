@@ -10,8 +10,14 @@ type ItemProps = {
   item: TodoList;
   checked: boolean;
   onChangeChecked: (itemNo: number) => void;
+  onDelete: (itemNo: number) => void;
 };
-const Item: React.FC<ItemProps> = ({ item, checked, onChangeChecked }) => {
+const Item: React.FC<ItemProps> = ({
+  item,
+  checked,
+  onChangeChecked,
+  onDelete,
+}) => {
   const handleClickCheckbox = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -27,9 +33,16 @@ const Item: React.FC<ItemProps> = ({ item, checked, onChangeChecked }) => {
     [onChangeChecked, item.id]
   );
 
-  // const handleClickTrash = useCallback(() => {
+  const handleClickTrash = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
 
-  // }, []);
+      if (window.confirm("아이템을 삭제하시겠습니까?")) {
+        onDelete?.(item.id);
+      }
+    },
+    [item.id, onDelete]
+  );
 
   return (
     <ItemContainer>
@@ -37,7 +50,7 @@ const Item: React.FC<ItemProps> = ({ item, checked, onChangeChecked }) => {
       <ItemButton onClick={handleClickCheckbox}>
         {checked ? "✅" : "🟩"}
       </ItemButton>
-      {/* <ItemButton>🗑</ItemButton> */}
+      <ItemButton onClick={handleClickTrash}>🗑</ItemButton>
     </ItemContainer>
   );
 };
