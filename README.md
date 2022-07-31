@@ -1,3 +1,4 @@
-## Electron 연습
+## Electron 연습 및 Recoil 연습
 
-일렉트론 연습을 위한 노력
+일렉트론과 Recoil 사용법 익히기
+간단하게 TodoList로 익혀보려한다.
