@@ -14,5 +14,5 @@ export const NavbarObject: NavbarObjectType[] = [
 ];
 
 export const NavbarRoutes = NavbarObject.map((item) => (
-  <Route path={item.path} element={item.element} />
+  <Route key={item.path} path={item.path} element={item.element} />
 ));

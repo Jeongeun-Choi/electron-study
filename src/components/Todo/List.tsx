@@ -1,4 +1,3 @@
-import { MouseEvent } from "react";
 import Item from "./Item";
 
 type TodoList = {

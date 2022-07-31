@@ -114,7 +114,6 @@ const TodoList = () => {
         storage = JSON.parse(local);
       }
 
-      /**@TODO 추가했을때 title 안나오는 현상 수정하기 */
       storage.push({ id: newId, title: element.value });
 
       if (storage) {
@@ -130,7 +129,7 @@ const TodoList = () => {
     <>
       <form onSubmit={handleSubmit}>
         <input ref={inputRef} placeholder="할 일 적으세여" />
-        <button>얍</button>
+        <button>등록</button>
       </form>
       <button onClick={handleDeleteAll}>전체 삭제!</button>
       <List
