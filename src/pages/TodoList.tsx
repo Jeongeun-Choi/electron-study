@@ -7,18 +7,21 @@ import {
   useRef,
   useState,
 } from "react";
+import { useRecoilState } from "recoil";
+import { TodoListState } from "recoil/todo.state";
 
 type CheckListType = {
   [key: number]: boolean;
 };
 
-type TodoListType = {
+export type TodoListType = {
   id: number;
   title: string;
 };
 const TodoList = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [todoList, setTodoList] = useState<TodoListType[]>([]);
+  const [todoList, setTodoList] = useRecoilState(TodoListState);
+  // const [todoList, setTodoList] = useState<TodoListType[]>([]);
   const [checkList, setCheckList] = useState<CheckListType>({ 1: false });
   const [totalId, setTotalId] = useState<number>(1);
 
@@ -30,12 +33,16 @@ const TodoList = () => {
     }
     const parseLocalStorage = JSON.parse(localTodoList);
 
+    if (parseLocalStorage.length < 1) {
+      return;
+    }
+
     const localTodoListLen = parseLocalStorage.length;
     const lastIndex = parseLocalStorage[localTodoListLen - 1].id;
 
     setTotalId(lastIndex);
     setTodoList(parseLocalStorage);
-  }, []);
+  }, [setTodoList]);
 
   const handleChangeChecked = useCallback((itemNo: number) => {
     setCheckList((prev) => {
@@ -76,17 +83,20 @@ const TodoList = () => {
       setCheckList(newCheckList);
       localStorage.setItem(`todo`, JSON.stringify(newLocalStorage));
     },
-    [checkList, todoList]
+    [checkList, todoList, setTodoList]
   );
 
-  const handleDeleteAll = useCallback((e: MouseEvent) => {
-    e.preventDefault();
-    if (window.confirm("정말 전체 할 일을 다 삭제하시겠습니까?")) {
-      setTodoList([]);
-      setCheckList({});
-      localStorage.setItem("todo", "");
-    }
-  }, []);
+  const handleDeleteAll = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      if (window.confirm("정말 전체 할 일을 다 삭제하시겠습니까?")) {
+        setTodoList([]);
+        setCheckList({});
+        localStorage.setItem("todo", "");
+      }
+    },
+    [setTodoList]
+  );
 
   const handleSubmit = useCallback(
     (e: FormEvent) => {
@@ -122,7 +132,7 @@ const TodoList = () => {
       element.value = "";
       setTotalId((prev) => prev + 1);
     },
-    [totalId, todoList, checkList]
+    [totalId, todoList, checkList, setTodoList]
   );
 
   return (
@@ -133,7 +143,6 @@ const TodoList = () => {
       </form>
       <button onClick={handleDeleteAll}>전체 삭제!</button>
       <List
-        todoList={todoList}
         checkList={checkList}
         onChangeChecked={handleChangeChecked}
         onDelete={handleDeleteItem}

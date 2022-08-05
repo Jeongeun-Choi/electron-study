@@ -1,3 +1,5 @@
+import { useRecoilValue } from "recoil";
+import { TodoListState } from "recoil/todo.state";
 import Item from "./Item";
 
 type TodoList = {
@@ -10,19 +12,18 @@ type CheckListType = {
 };
 
 type ListProps = {
-  todoList: TodoList[];
   checkList: CheckListType;
   onChangeChecked: (itemNo: number) => void;
   onDelete: (itemNo: number) => void;
 };
 
 const List: React.FC<ListProps> = ({
-  todoList,
   checkList,
   onChangeChecked,
   onDelete,
 }) => {
-  console.log(todoList);
+  const todoList = useRecoilValue(TodoListState);
+
   return (
     <div>
       {todoList.map((todo) => (
